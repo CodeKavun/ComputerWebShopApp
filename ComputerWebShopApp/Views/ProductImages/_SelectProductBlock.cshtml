@@ -1,0 +1,58 @@
+﻿@using ComputerWebShopApp.Models.ViewModels.ProductImages
+@model CreateImageVM
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div id="selectBlock">
+    <div class="mb-3">
+        <label asp-for="SelectedBrandId" class="control-label"></label>
+        <select class="form-select" asp-for="SelectedBrandId"
+                asp-items="Model.Brands"
+                onchange="getProducts(event)">
+                <option value="@(null)">Всі</option>
+            </select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="SelectedCategoryId" class="control-label"></label>
+        <select class="form-select" asp-for="SelectedCategoryId"
+                asp-items="Model.Categories"
+        onchange="getProducts(event)">
+            <option value="@(null)">Всі</option>
+    </select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="SelectedProductId" class="control-label"></label>
+        <select class="form-select" asp-for="SelectedProductId"
+                asp-items="Model.Products"></select>
+    </div>
+    <script>
+        async function getProducts(e) {
+            var brandSelector = document.querySelector("select[name=SelectedBrandId]");
+            var categorySelector = document.querySelector("select[name=SelectedCategoryId]");
+            let brandId = brandSelector.value;
+            console.log("brand Id", brandId)
+           
+            let categoryId = categorySelector.value;
+            console.log("category Id", categoryId)
+            let resp = await fetch(`/productimages/getproducts?brandId=${brandId}&categoryId=${categoryId}`, {
+                method: "GET"
+            });
+            if (resp.ok === true) {
+                let text = await resp.text();
+                let selectBlock = document.getElementById("selectBlock");
+                let tempDiv = document.createElement("div");
+                tempDiv.innerHTML = text;
+                if (selectBlock)
+                    selectBlock.replaceWith(tempDiv.firstChild);
+            }
+        }
+        // document.addEventListener("DOMContentLoaded", () => {
+        //     var brandSelector = document.querySelector("select[name=SelectedBrandId]");
+        //     var categorySelector = document.querySelector("select[name=SelectedCategoryId]");
+        //     console.log(brandSelector);
+        //     brandSelector.addEventListener("change", getProducts);
+        //     categorySelector.addEventListener("change", getProducts);
+        // });
+    </script>
+</div>
+

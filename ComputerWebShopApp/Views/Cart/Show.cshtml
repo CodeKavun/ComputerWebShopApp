@@ -1,0 +1,8 @@
+﻿@model string?
+@{
+    ViewData["Title"] = "Show";
+}
+
+<h1>Перевірка даних в сесії</h1>
+<h2>@(Model is not null ? Model : "Дані не встановлені")</h2>
+
